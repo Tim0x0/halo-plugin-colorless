@@ -2,22 +2,20 @@ apiVersion: plugin.halo.run/v1alpha1
 kind: Plugin
 metadata:
   name: plugin-colorless
-  annotations:
-    store.halo.run/app-id: "app-IbqRW"
 spec:
   enabled: true
-  requires: ">=2.13.0"
+  requires: ">=2.26.0"
   author:
-    name: guqing
-    website: https://github.com/guqing
+    name: Tim0x0
+    website: https://github.com/Tim0x0
   logo: logo.svg
-  homepage: https://www.halo.run/store/apps/app-IbqRW
-  repo: https://github.com/guqing/halo-plugin-colorless
-  issues: https://github.com/guqing/halo-plugin-colorless/issues
+  homepage: https://github.com/Tim0x0/halo-plugin-colorless#readme
+  repo: https://github.com/Tim0x0/halo-plugin-colorless
+  issues: https://github.com/Tim0x0/halo-plugin-colorless/issues
   displayName: 无色界
   settingName: plugin-colorless-setting
   configMapName: plugin-colorless-config
-  description: 让 Halo 所有主题都失去色彩，展示为灰白效果。
+  description: 在公祭日、纪念日等指定日期让站点整天显示为灰白效果，结束后自动恢复；也可以手动一键变灰。
   license:
     - name: "GPL-3.0"
-      url: "https://github.com/guqing/halo-plugin-colorless/blob/main/LICENSE"
+      url: "https://github.com/Tim0x0/halo-plugin-colorless/blob/main/LICENSE"

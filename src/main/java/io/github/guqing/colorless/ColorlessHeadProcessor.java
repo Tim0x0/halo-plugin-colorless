@@ -1,6 +1,8 @@
 package io.github.guqing.colorless;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +19,8 @@ import run.halo.app.theme.dialect.TemplateHeadProcessor;
 @AllArgsConstructor
 public class ColorlessHeadProcessor implements TemplateHeadProcessor {
 
+    private static final String INDEX_TEMPLATE_ID = "index";
+
     private final ReactiveSettingFetcher settingFetcher;
 
     @Override
@@ -26,30 +30,48 @@ public class ColorlessHeadProcessor implements TemplateHeadProcessor {
         return settingFetcher.fetch(BasicSetting.GROUP, BasicSetting.class)
             .defaultIfEmpty(new BasicSetting())
             .doOnNext(basicSetting -> {
-                if (BooleanUtils.isNotTrue(basicSetting.getEnable())) {
-                    // disabled
+                if (!shouldGray(basicSetting)) {
                     return;
                 }
-
-                LocalDate selfCloseAt = basicSetting.getSelfCloseAt();
-                if (selfCloseAt != null && selfCloseAt.isBefore(LocalDate.now())) {
-                    // expired already
+                if (!inScope(basicSetting, context)) {
                     return;
                 }
-
-                String templateId = (String) context.getVariable("_templateId");
-                boolean onlyIndex = BooleanUtils.isNotTrue(basicSetting.getScope());
-                if (onlyIndex && !StringUtils.equals("index", templateId)) {
-                    return;
-                }
-                String s = htmlGrayFilter();
                 IModelFactory modelFactory = context.getModelFactory();
-                model.add(modelFactory.createText(s));
+                model.add(modelFactory.createText(grayscaleStyle()));
             })
             .then();
     }
 
-    private static String htmlGrayFilter() {
+    private static boolean shouldGray(BasicSetting basicSetting) {
+        if (BooleanUtils.isTrue(basicSetting.getManual())) {
+            return true;
+        }
+        LocalDate today = LocalDate.now(resolveZone(basicSetting.getTimezone()));
+        return MemorialDayMatcher.shouldGray(basicSetting, today);
+    }
+
+    private static boolean inScope(BasicSetting basicSetting, ITemplateContext context) {
+        if (BooleanUtils.isTrue(basicSetting.getScope())) {
+            return true;
+        }
+        return INDEX_TEMPLATE_ID.equals(context.getVariable("_templateId"));
+    }
+
+    /**
+     * 解析 IANA 时区。留空或非法时使用 Halo 服务端时区（{@link ZoneId#systemDefault()}）。
+     */
+    static ZoneId resolveZone(String timezone) {
+        if (StringUtils.isBlank(timezone)) {
+            return ZoneId.systemDefault();
+        }
+        try {
+            return ZoneId.of(timezone.trim());
+        } catch (DateTimeException e) {
+            return ZoneId.systemDefault();
+        }
+    }
+
+    private static String grayscaleStyle() {
         return """
             <style type="text/css">
               html {

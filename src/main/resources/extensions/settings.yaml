@@ -8,15 +8,6 @@ spec:
       label: 基本设置
       formSchema:
         - $formkit: radio
-          name: enable
-          label: 是否开启
-          value: false
-          options:
-            - value: true
-              label: 开启
-            - value: false
-              label: 关闭
-        - $formkit: radio
           name: scope
           label: 作用范围
           value: false
@@ -25,6 +16,338 @@ spec:
               label: 全站
             - value: false
               label: 仅首页
-        - $formkit: date
-          name: selfCloseAt
-          label: 到期自动关闭
+        - $formkit: switch
+          name: manual
+          label: 手动变灰
+          value: false
+          help: 开启后立即变灰，直到手动关闭；关闭后仍按清明与纪念日判断
+        - $formkit: switch
+          name: qingming
+          label: 清明
+          value: true
+          help: 按节气公式计算，每年 4 月 4 日或 5 日当天变灰
+        - $formkit: array
+          name: memorialDays
+          label: 纪念日
+          help: 命中任意一条即当天变灰（按下方时区的 0 点到 24 点）。连续多天请添加多条
+          addLabel: 添加纪念日
+          emptyText: 暂无纪念日
+          itemLabels:
+            - type: text
+              label: $value.name
+          value:
+            - name: 汶川地震纪念日
+              type: yearly
+              month: "5"
+              day: "12"
+            - name: 七七事变纪念日
+              type: yearly
+              month: "7"
+              day: "7"
+            - name: 九一八事变纪念日
+              type: yearly
+              month: "9"
+              day: "18"
+            - name: 烈士纪念日
+              type: yearly
+              month: "9"
+              day: "30"
+            - name: 南京大屠杀死难者国家公祭日
+              type: yearly
+              month: "12"
+              day: "13"
+          children:
+            - $formkit: text
+              name: name
+              label: 名称
+              value: ""
+              validation: required
+            - $formkit: radio
+              name: type
+              key: type
+              label: 类型
+              value: yearly
+              help: 每年重复只选月和日；指定日期仅当天生效
+              options:
+                - value: yearly
+                  label: 每年重复
+                - value: absolute
+                  label: 指定日期
+            - $formkit: select
+              name: month
+              key: month
+              if: "$value.type === yearly"
+              label: 月份
+              value: ""
+              validation: required
+              autoSelect: false
+              options:
+                - label: 1月
+                  value: "1"
+                - label: 2月
+                  value: "2"
+                - label: 3月
+                  value: "3"
+                - label: 4月
+                  value: "4"
+                - label: 5月
+                  value: "5"
+                - label: 6月
+                  value: "6"
+                - label: 7月
+                  value: "7"
+                - label: 8月
+                  value: "8"
+                - label: 9月
+                  value: "9"
+                - label: 10月
+                  value: "10"
+                - label: 11月
+                  value: "11"
+                - label: 12月
+                  value: "12"
+            - $formkit: select
+              name: day
+              key: day-31
+              if: "$value.type === yearly && ($value.month == 1 || $value.month == 3 || $value.month == 5 || $value.month == 7 || $value.month == 8 || $value.month == 10 || $value.month == 12)"
+              label: 日期
+              value: ""
+              validation: required
+              autoSelect: false
+              options:
+                - label: 1日
+                  value: "1"
+                - label: 2日
+                  value: "2"
+                - label: 3日
+                  value: "3"
+                - label: 4日
+                  value: "4"
+                - label: 5日
+                  value: "5"
+                - label: 6日
+                  value: "6"
+                - label: 7日
+                  value: "7"
+                - label: 8日
+                  value: "8"
+                - label: 9日
+                  value: "9"
+                - label: 10日
+                  value: "10"
+                - label: 11日
+                  value: "11"
+                - label: 12日
+                  value: "12"
+                - label: 13日
+                  value: "13"
+                - label: 14日
+                  value: "14"
+                - label: 15日
+                  value: "15"
+                - label: 16日
+                  value: "16"
+                - label: 17日
+                  value: "17"
+                - label: 18日
+                  value: "18"
+                - label: 19日
+                  value: "19"
+                - label: 20日
+                  value: "20"
+                - label: 21日
+                  value: "21"
+                - label: 22日
+                  value: "22"
+                - label: 23日
+                  value: "23"
+                - label: 24日
+                  value: "24"
+                - label: 25日
+                  value: "25"
+                - label: 26日
+                  value: "26"
+                - label: 27日
+                  value: "27"
+                - label: 28日
+                  value: "28"
+                - label: 29日
+                  value: "29"
+                - label: 30日
+                  value: "30"
+                - label: 31日
+                  value: "31"
+            - $formkit: select
+              name: day
+              key: day-30
+              if: "$value.type === yearly && ($value.month == 4 || $value.month == 6 || $value.month == 9 || $value.month == 11)"
+              label: 日期
+              value: ""
+              validation: required
+              autoSelect: false
+              options:
+                - label: 1日
+                  value: "1"
+                - label: 2日
+                  value: "2"
+                - label: 3日
+                  value: "3"
+                - label: 4日
+                  value: "4"
+                - label: 5日
+                  value: "5"
+                - label: 6日
+                  value: "6"
+                - label: 7日
+                  value: "7"
+                - label: 8日
+                  value: "8"
+                - label: 9日
+                  value: "9"
+                - label: 10日
+                  value: "10"
+                - label: 11日
+                  value: "11"
+                - label: 12日
+                  value: "12"
+                - label: 13日
+                  value: "13"
+                - label: 14日
+                  value: "14"
+                - label: 15日
+                  value: "15"
+                - label: 16日
+                  value: "16"
+                - label: 17日
+                  value: "17"
+                - label: 18日
+                  value: "18"
+                - label: 19日
+                  value: "19"
+                - label: 20日
+                  value: "20"
+                - label: 21日
+                  value: "21"
+                - label: 22日
+                  value: "22"
+                - label: 23日
+                  value: "23"
+                - label: 24日
+                  value: "24"
+                - label: 25日
+                  value: "25"
+                - label: 26日
+                  value: "26"
+                - label: 27日
+                  value: "27"
+                - label: 28日
+                  value: "28"
+                - label: 29日
+                  value: "29"
+                - label: 30日
+                  value: "30"
+            - $formkit: select
+              name: day
+              key: day-28
+              if: "$value.type === yearly && $value.month == 2"
+              label: 日期
+              value: ""
+              validation: required
+              autoSelect: false
+              options:
+                - label: 1日
+                  value: "1"
+                - label: 2日
+                  value: "2"
+                - label: 3日
+                  value: "3"
+                - label: 4日
+                  value: "4"
+                - label: 5日
+                  value: "5"
+                - label: 6日
+                  value: "6"
+                - label: 7日
+                  value: "7"
+                - label: 8日
+                  value: "8"
+                - label: 9日
+                  value: "9"
+                - label: 10日
+                  value: "10"
+                - label: 11日
+                  value: "11"
+                - label: 12日
+                  value: "12"
+                - label: 13日
+                  value: "13"
+                - label: 14日
+                  value: "14"
+                - label: 15日
+                  value: "15"
+                - label: 16日
+                  value: "16"
+                - label: 17日
+                  value: "17"
+                - label: 18日
+                  value: "18"
+                - label: 19日
+                  value: "19"
+                - label: 20日
+                  value: "20"
+                - label: 21日
+                  value: "21"
+                - label: 22日
+                  value: "22"
+                - label: 23日
+                  value: "23"
+                - label: 24日
+                  value: "24"
+                - label: 25日
+                  value: "25"
+                - label: 26日
+                  value: "26"
+                - label: 27日
+                  value: "27"
+                - label: 28日
+                  value: "28"
+            - $formkit: date
+              name: date
+              key: date
+              if: "$value.type === absolute"
+              label: 日期
+              value: ""
+              validation: required
+              help: 仅当天生效
+        - $formkit: select
+          name: timezone
+          label: 时区
+          value: Asia/Shanghai
+          searchable: true
+          autoSelect: false
+          help: 留空使用 Halo 服务端时区。站点按该时区的「今天」变灰，与访客浏览器无关；已有纪念日日期不会移动
+          options:
+            - label: 跟随服务端
+              value: ""
+            - label: 北京时间
+              value: Asia/Shanghai
+            - label: 香港
+              value: Asia/Hong_Kong
+            - label: 台北
+              value: Asia/Taipei
+            - label: 东京
+              value: Asia/Tokyo
+            - label: 新加坡
+              value: Asia/Singapore
+            - label: UTC
+              value: UTC
+            - label: 伦敦
+              value: Europe/London
+            - label: 巴黎
+              value: Europe/Paris
+            - label: 纽约
+              value: America/New_York
+            - label: 洛杉矶
+              value: America/Los_Angeles
+            - label: 悉尼
+              value: Australia/Sydney

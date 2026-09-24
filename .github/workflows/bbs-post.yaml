@@ -1,0 +1,35 @@
+# Release 发布后把发布说明同步为 BBS 公告（本仓库的触发入口）。
+# 发帖逻辑在 BBS 插件仓库的可复用工作流 reusable-bbs-post.yaml，本文件只负责触发与传参；
+# 接入说明与配置项见该仓库 README「Release 自动发帖」。
+#
+# 需要在仓库 Settings → Secrets and variables → Actions 配置：
+#   secret   BBS_POST_PAT       Halo 站点的个人访问令牌（持牌用户需有 BBS 版主 bbs-moderate 及以上角色）。
+#                               与官方 CD 上传应用市场用的 halo-pat（halo.run 官方站凭据）是两回事，勿混用。
+#   variable HALO_BASE_URL      Halo 站点地址（如 https://example.com，须可被 GitHub 公网访问）
+#   variable BBS_CATEGORY_NAME  目标分类的 metadata.name（形如 category-xxxx，不是显示名）
+#   variable BBS_PROJECT_NAME   可选。标题前缀，按原样拼接（如「[BBS 社区]」或「BBS 社区 |」）
+
+name: 同步 BBS 公告
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag（如 v1.2.3），将创建或更新该版本对应的帖子'
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  sync-bbs-post:
+    uses: Tim0x0/halo-plugin-bbs/.github/workflows/reusable-bbs-post.yaml@main
+    with:
+      tag: ${{ inputs.tag }} # 手动运行时为所填 tag；release 事件触发时为空，由可复用工作流读取事件负载
+      halo-base-url: ${{ vars.HALO_BASE_URL }}
+      category-name: ${{ vars.BBS_CATEGORY_NAME }}
+      project-name: ${{ vars.BBS_PROJECT_NAME }}
+    secrets:
+      bbs-post-pat: ${{ secrets.BBS_POST_PAT }}

@@ -7,12 +7,11 @@ on:
 
 jobs:
   cd:
-    uses: halo-sigs/reusable-workflows/.github/workflows/plugin-cd.yaml@v1
-    secrets:
-      halo-username: ${{ secrets.HALO_USERNAME }}
-      halo-password: ${{ secrets.HALO_PASSWORD }}
+    uses: halo-sigs/reusable-workflows/.github/workflows/plugin-cd.yaml@v4
     permissions:
       contents: write
     with:
       skip-node-setup: true
-      app-id: app-IbqRW
+      java-version: 21
+      # 只把 jar 附到 GitHub Release，不推送 Halo 应用市场
+      skip-appstore-release: true
