@@ -11,7 +11,7 @@ spec:
   logo: logo.svg
   homepage: https://github.com/Tim0x0/halo-plugin-colorless#readme
   repo: https://github.com/Tim0x0/halo-plugin-colorless
-  issues: https://github.com/Tim0x0/halo-plugin-colorless/issues
+  issues: https://blog.timxs.com/bbs?category=misc-plugins
   displayName: 无色界
   settingName: plugin-colorless-setting
   configMapName: plugin-colorless-config
